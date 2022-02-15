@@ -9,7 +9,7 @@ import { posts } from '../../models/posts.model'
 })
 export class PostsCreateComponent implements OnInit {
 
-  constructor(private ps: PostsService) { }
+  constructor(private postservice: PostsService) { }
 
   ngOnInit(): void {
   }
@@ -19,10 +19,11 @@ export class PostsCreateComponent implements OnInit {
       return;
     }
     const post: posts = {
+      id: form.value.id,
       title: form.value.title,
       content: form.value.content
     };
-    this.ps.addPosts(form.value.title, form.value.content);
+    this.postservice.addPosts(form.value.id, form.value.title, form.value.content);
     form.resetForm();
   }
 
