@@ -15,6 +15,7 @@ export class PostsCreateComponent implements OnInit {
   }
 
   onAddPosts(form: NgForm) {
+    console.log(form.value.id);
     if (form.invalid) {
       return;
     }
