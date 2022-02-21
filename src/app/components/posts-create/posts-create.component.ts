@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { PostsService } from 'src/app/services/posts.service';
 import { posts } from '../../models/posts.model'
 @Component({
@@ -9,22 +10,43 @@ import { posts } from '../../models/posts.model'
 })
 export class PostsCreateComponent implements OnInit {
 
-  constructor(private postservice: PostsService) { }
+  constructor(private postservice: PostsService, public route: ActivatedRoute) { }
+  post: posts
+  private mode = 'create';
+  private postid: string;
+  isLoading = false;
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('postid')) {
+        this.mode = 'edit';
+        this.postid = paramMap.get('postid');
+        // show spinner when starts fetching
+        this.isLoading = true;
+        this.postservice.getPost(this.postid).subscribe(postdata => {
+          //  hide spinner after fetching results
+          this.isLoading = true;
+          this.post = { id: postdata._id, title: postdata.title, content: postdata.content }
+        })
+      }
+      else {
+        this.mode = 'create';
+        this.postid = null
+      }
+    })
   }
 
-  onAddPosts(form: NgForm) {
-    console.log(form.value.id);
+  onSaveposts(form: NgForm) {
     if (form.invalid) {
       return;
     }
-    const post: posts = {
-      id: form.value.id,
-      title: form.value.title,
-      content: form.value.content
-    };
-    this.postservice.addPosts(form.value.id, form.value.title, form.value.content);
+    this.isLoading = true;
+    if (this.mode === 'create') {
+      this.postservice.addPosts(form.value.id, form.value.title, form.value.content);
+    }
+    else {
+      this.postservice.updatePost(this.postid, form.value.title, form.value.content)
+    }
     form.resetForm();
   }
 
