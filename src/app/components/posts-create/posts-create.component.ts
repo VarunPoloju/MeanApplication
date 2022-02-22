@@ -2,7 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { PostsService } from 'src/app/services/posts.service';
-import { posts } from '../../models/posts.model'
+import { posts } from '../../models/posts.model';
+import { fileType } from './file-type.validator'
 @Component({
   selector: 'app-posts-create',
   templateUrl: './posts-create.component.html',
@@ -17,6 +18,7 @@ export class PostsCreateComponent implements OnInit {
   private mode = "create";
   private postId: string;
   form: FormGroup;
+  imagePreview: string;
 
   constructor(
     public postsService: PostsService,
@@ -27,7 +29,7 @@ export class PostsCreateComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required] }),
-      image: new FormControl(null, { validators: [Validators.required] })
+      image: new FormControl(null, { validators: [Validators.required], asyncValidators: [fileType] })
     })
 
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -69,8 +71,11 @@ export class PostsCreateComponent implements OnInit {
     // patchValue --> allows u to take and target a single control
     this.form.patchValue({ image: file });
     this.form.get('image').updateValueAndValidity();
-    console.log(file);
-    console.log(this.form);
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = (reader.result as string);
+    }
+    reader.readAsDataURL(file);
   }
 
 }
