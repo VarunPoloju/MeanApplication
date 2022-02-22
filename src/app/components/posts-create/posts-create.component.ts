@@ -10,42 +10,48 @@ import { posts } from '../../models/posts.model'
 })
 export class PostsCreateComponent implements OnInit {
 
-  constructor(private postservice: PostsService, public route: ActivatedRoute) { }
-  post: posts
-  private mode = 'create';
-  private postid: string;
+  enteredTitle = "";
+  enteredContent = "";
+  post: posts;
   isLoading = false;
+  private mode = "create";
+  private postId: string;
+
+  constructor(
+    public postsService: PostsService,
+    public route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
-      if (paramMap.has('postid')) {
-        this.mode = 'edit';
-        this.postid = paramMap.get('postid');
-        // show spinner when starts fetching
+      if (paramMap.has("postId")) {
+        this.mode = "edit";
+        this.postId = paramMap.get("postId");
         this.isLoading = true;
-        this.postservice.getPost(this.postid).subscribe(postdata => {
-          //  hide spinner after fetching results
-          this.isLoading = true;
-          this.post = { id: postdata._id, title: postdata.title, content: postdata.content }
-        })
+        this.postsService.getPost(this.postId).subscribe(postData => {
+          this.isLoading = false;
+          this.post = { id: postData._id, title: postData.title, content: postData.content };
+        });
+      } else {
+        this.mode = "create";
+        this.postId = null;
       }
-      else {
-        this.mode = 'create';
-        this.postid = null
-      }
-    })
+    });
   }
 
-  onSaveposts(form: NgForm) {
+  onSavePost(form: NgForm) {
     if (form.invalid) {
       return;
     }
     this.isLoading = true;
-    if (this.mode === 'create') {
-      this.postservice.addPosts(form.value.id, form.value.title, form.value.content);
-    }
-    else {
-      this.postservice.updatePost(this.postid, form.value.title, form.value.content)
+    if (this.mode === "create") {
+      this.postsService.addPost(form.value.title, form.value.content);
+    } else {
+      this.postsService.updatePost(
+        this.postId,
+        form.value.title,
+        form.value.content
+      );
     }
     form.resetForm();
   }
