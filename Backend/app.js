@@ -14,7 +14,7 @@ mongoose
   })
   .catch("DB connection failed");
 
-app.use(bodyParser.json()); //-> to parse req.payload
+app.use(bodyParser.json()); //-> to parse req.payload , not for image files to parse
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // to resolve CORS issue add this headers
