@@ -11,15 +11,16 @@ mat-spinner {
   margin: auto;
 }
 
-input[type='file']{
+input[type='file'] {
   visibility: hidden;
 }
 
-.image-Preview{
-  height: 100px;
+.image-preview {
   margin: 1rem 0;
+  width: 50%;
 }
 
-.image-Preview img{
-  height: 100%;
+.image-preview img {
+  height: 50%;
+  width: 50%;
 }

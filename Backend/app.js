@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const postRoutes = require("../Backend/routes/posts");
+const path = require("path");
 
 mongoose
   .connect(
@@ -16,6 +17,9 @@ mongoose
 
 app.use(bodyParser.json()); //-> to parse req.payload , not for image files to parse
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// access permission for images
+app.use("/images", express.static(path.join("Backend/images")));
 
 // to resolve CORS issue add this headers
 app.use(cors({ origin: "http://localhost:4200", credentials: true }));
