@@ -2,6 +2,9 @@ import { AbstractControl } from "@angular/forms";
 import { Observable, Observer } from "rxjs";
 
 export const fileType = (control: AbstractControl): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {
+    if (typeof(control.value) === 'string') {
+        return (null);
+      }
     // extract file
     const file = control.value as File;
     // instantiate file reader  --> to read file
