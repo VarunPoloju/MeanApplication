@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const postRoutes = require("../Backend/routes/posts");
+const userRoutes = require("../Backend/routes/user")
 const path = require("path");
 
 mongoose
@@ -27,5 +28,6 @@ app.options("*", cors());
 
 // to use all the routes
 app.use("/api/posts", postRoutes);
+app.use("/api/user",userRoutes)
 
 module.exports = app;
