@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../../models/Postmodel");
 const multer = require("multer");
-const { count } = require("console");
+const checkAuthorization = require('../middleware/chec-auth');
+
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -66,8 +67,10 @@ router.get("/:id", (req, res, next) => {
 });
 // ==========================POST==============================
 router.post(
-  "",
-  multer({ storage: storage }).single("image"),
+  "",checkAuthorization,
+  multer({
+    storage: storage
+  }).single("image"),
   (req, res, next) => {
     const url = req.protocol + "://" + req.get("host");
     const post = new Post({
@@ -89,8 +92,10 @@ router.post(
 // ==========================PUT==============================
 
 router.put(
-  "/:id",
-  multer({ storage: storage }).single("image"),
+  "/:id",checkAuthorization,
+  multer({
+    storage: storage
+  }).single("image"),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
     if (req.file) {
@@ -104,18 +109,26 @@ router.put(
       imagePath: imagePath,
     });
     console.log(post);
-    Post.updateOne({ _id: req.params.id }, post).then((result) => {
-      res.status(200).json({ message: "Update successful!" });
+    Post.updateOne({
+      _id: req.params.id
+    }, post).then((result) => {
+      res.status(200).json({
+        message: "Update successful!"
+      });
     });
   }
 );
 
 // ===============================delete============================
 
-router.delete("/:id", (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then((result) => {
+router.delete("/:id", checkAuthorization, (req, res, next) => {
+  Post.deleteOne({
+    _id: req.params.id
+  }).then((result) => {
     console.log(result);
-    res.status(200).json({ message: "Post deleted successfully!" });
+    res.status(200).json({
+      message: "Post deleted successfully!"
+    });
   });
 });
 
