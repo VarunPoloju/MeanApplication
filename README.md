@@ -1,3 +1,11 @@
+Mean application where user can sign in and sign out. Implemented using JWT token
+It has auth Interceptor
+Post and auth services
+post and auth models
+header, login, posts-create, post-list, signUp components
+
+
+
 # MeanApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.0.
